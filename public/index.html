@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Attendance System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2><i class="fas fa-graduation-cap"></i> Attendance</h2>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" onclick="showPage('dashboard')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showPage('department')">
+            <i class="fas fa-building"></i>
+            <span>Department</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showPage('percentage')">
+            <i class="fas fa-chart-pie"></i>
+            <span>Attendance %</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showPage('report')">
+            <i class="fas fa-file-alt"></i>
+            <span>Report</span>
+        </a>
+    </nav>
+</div>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+    
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <button class="menu-btn" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h3 id="pageTitle">Dashboard</h3>
+        </div>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" 
+                   placeholder="Roll Number தேடு..." 
+                   oninput="searchStudent(this.value)">
+        </div>
+    </div>
+
+    <!-- Search Results Dropdown -->
+    <div class="search-results" id="searchResults"></div>
+
+    <!-- Pages -->
+
+    <!-- Dashboard Page -->
+    <div class="page active" id="page-dashboard">
+        <div class="dashboard-cards">
+            <div class="dash-card" onclick="showPage('department')">
+                <div class="card-icon blue">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h3>Department</h3>
+                <p>Manage Departments</p>
+            </div>
+            <div class="dash-card" onclick="showPage('percentage')">
+                <div class="card-icon green">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h3>Attendance %</h3>
+                <p>View Percentages</p>
+            </div>
+            <div class="dash-card" onclick="showPage('report')">
+                <div class="card-icon orange">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3>Reports</h3>
+                <p>Weekly / Monthly / Semester</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Department Page -->
+    <div class="page" id="page-department">
+        <div class="breadcrumb" id="breadcrumb">
+            <span onclick="resetDept()">Department</span>
+        </div>
+        <div class="options-grid" id="deptOptions">
+            <div class="option-card" onclick="selectDept('cs')">
+                <i class="fas fa-laptop-code"></i>
+                <h3>Computer Science</h3>
+            </div>
+        </div>
+        <!-- Sub Options will load here -->
+        <div id="subOptions"></div>
+        <!-- Attendance Table will load here -->
+        <div id="attendanceSection"></div>
+    </div>
+
+    <!-- Percentage Page -->
+    <div class="page" id="page-percentage">
+        <div class="breadcrumb" id="pctBreadcrumb">
+            <span onclick="resetPct()">Attendance %</span>
+        </div>
+        <div class="options-grid" id="pctOptions">
+            <div class="option-card" onclick="selectPctDept('cs')">
+                <i class="fas fa-laptop-code"></i>
+                <h3>Computer Science</h3>
+            </div>
+        </div>
+        <div id="pctSubOptions"></div>
+        <div id="pctTable"></div>
+    </div>
+
+    <!-- Report Page -->
+    <div class="page" id="page-report">
+        <div class="breadcrumb" id="rptBreadcrumb">
+            <span onclick="resetReport()">Reports</span>
+        </div>
+        <div class="options-grid" id="rptOptions">
+            <div class="option-card weekly" onclick="selectReportType('weekly')">
+                <i class="fas fa-calendar-week"></i>
+                <h3>Weekly Report</h3>
+            </div>
+            <div class="option-card monthly" onclick="selectReportType('monthly')">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Monthly Report</h3>
+            </div>
+            <div class="option-card semester" onclick="selectReportType('semester')">
+                <i class="fas fa-book"></i>
+                <h3>Semester Report</h3>
+            </div>
+        </div>
+        <div id="rptSubOptions"></div>
+        <div id="rptTable"></div>
+    </div>
+
+</div>
+
+<!-- Add Student Modal -->
+<div class="modal" id="addStudentModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-user-plus"></i> Add New Student</h3>
+            <button onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Student Name *</label>
+                <input type="text" id="studentName" placeholder="Enter student name">
+            </div>
+            <div class="form-group">
+                <label>Roll Number *</label>
+                <input type="text" id="rollNumber" placeholder="Example: 24CS001">
+            </div>
+            <div class="form-group">
+                <label>Course *</label>
+                <select id="courseSelect">
+                    <option value="">Select Course</option>
+                    <option value="1">B.Sc Computer Science</option>
+                    <option value="2">BCA - Section A</option>
+                    <option value="3">BCA - Section B</option>
+                    <option value="4">M.Sc Computer Science</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Year *</label>
+                <select id="yearSelect">
+                    <option value="">Select Year</option>
+                    <option value="1">1st Year</option>
+                    <option value="2">2nd Year</option>
+                    <option value="3">3rd Year</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Academic Year *</label>
+                <input type="text" id="academicYear" 
+                       placeholder="Example: 2024-2027">
+            </div>
+            <button class="btn-primary" onclick="addStudent()">
+                <i class="fas fa-save"></i> Add Student
+            </button>
+        </div>
+    </div>
+</div>
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
